@@ -53,6 +53,8 @@ public class TS_FileObjUtils {
             Object obj;
             try ( var input = new ObjectInputStream(is)) {
                 obj = input.readObject();
+            } catch (EOFException e) {
+                return null;
             }
             return obj;
         });
