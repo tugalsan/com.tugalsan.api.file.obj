@@ -3,7 +3,6 @@ package com.tugalsan.api.file.obj.server;
 import com.tugalsan.api.string.server.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.io.*;
-import java.nio.charset.*;
 
 public class TS_FileObjUtils {
 
@@ -25,6 +24,15 @@ public class TS_FileObjUtils {
         });
     }
 
+    public static Object toString(byte[] bytes) {
+        return TGS_UnSafe.compile(() -> {
+            if (bytes == null) {
+                return null;
+            }
+            return TS_StringUtils.toString(bytes);
+        });
+    }
+
     public static Object toObject(byte[] bytes) {
         return TGS_UnSafe.compile(() -> {
             if (bytes == null) {
@@ -34,6 +42,9 @@ public class TS_FileObjUtils {
             try ( var bais = new ByteArrayInputStream(bytes)) {
                 obj = toObject(bais);
             }
+            if (obj == null) {
+                return null;
+            }
             if (obj instanceof CharSequence) {
                 return TS_StringUtils.toString(bytes);
             }
@@ -41,21 +52,12 @@ public class TS_FileObjUtils {
         });
     }
 
+    @Deprecated// for not Strings
     public static Object toObject(InputStream is) {
         return TGS_UnSafe.compile(() -> {
             Object obj;
             try ( var input = new ObjectInputStream(is)) {
                 obj = input.readObject();
-            }
-            if (obj instanceof CharSequence) {
-                try ( var input = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                    var sb = new StringBuilder();
-                    String readLine;
-                    while ((readLine = input.readLine()) != null) {
-                        sb.append(readLine).append("\n");
-                    }
-                    return sb.substring(0, sb.length() - 1);
-                }
             }
             return obj;
         });
