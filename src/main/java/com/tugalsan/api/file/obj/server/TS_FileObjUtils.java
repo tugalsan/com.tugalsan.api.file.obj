@@ -25,12 +25,7 @@ public class TS_FileObjUtils {
     }
 
     public static Object toString(byte[] bytes) {
-        return TGS_UnSafe.compile(() -> {
-            if (bytes == null) {
-                return null;
-            }
-            return TS_StringUtils.toString(bytes);
-        });
+        return TS_StringUtils.toString(bytes);
     }
 
     public static Object toObject(byte[] bytes) {
