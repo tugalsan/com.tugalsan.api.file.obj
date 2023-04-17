@@ -7,7 +7,7 @@ import java.io.*;
 public class TS_FileObjUtils {
 
     public static byte[] toBytes(Object obj) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             if (obj == null) {
                 return null;
             }
@@ -29,7 +29,7 @@ public class TS_FileObjUtils {
     }
 
     public static Object toObject(byte[] bytes) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             if (bytes == null) {
                 return null;
             }
@@ -49,7 +49,7 @@ public class TS_FileObjUtils {
 
     @Deprecated// for not Strings
     public static Object toObject(InputStream is) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             Object obj;
             try ( var input = new ObjectInputStream(is)) {
                 obj = input.readObject();
@@ -61,7 +61,7 @@ public class TS_FileObjUtils {
     }
 
     public static void toStream(Object sourceObject, OutputStream os) {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             try ( var output = new ObjectOutputStream(os)) {
                 output.writeObject(sourceObject);
                 output.flush();
