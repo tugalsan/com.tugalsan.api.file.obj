@@ -17,9 +17,12 @@ public class TS_FileObjUtils {
             if (obj instanceof CharSequence val) {
                 return TS_StringUtils.toByte(val.toString());
             }
-            try ( var baos = new ByteArrayOutputStream()) {
-                toStream(obj, baos);
-                return baos.toByteArray();
+            try (var baos = new ByteArrayOutputStream()) {
+                try (var oos = new ObjectOutputStream(baos)) {// DO NOT CLOSE OOS before getting byte array!
+                    oos.writeObject(obj);
+                    oos.flush();
+                    return baos.toByteArray();
+                }
             }
         });
     }
@@ -28,13 +31,13 @@ public class TS_FileObjUtils {
         return TS_StringUtils.toString(bytes);
     }
 
-    public static Object toObject(byte[] bytes) {
+    public static Object toObject(byte[] bytes) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
         return TGS_UnSafe.call(() -> {
             if (bytes == null) {
                 return null;
             }
             Object obj;
-            try ( var bais = new ByteArrayInputStream(bytes)) {
+            try (var bais = new ByteArrayInputStream(bytes)) {
                 obj = toObject(bais);
             }
             if (obj == null) {
@@ -51,7 +54,7 @@ public class TS_FileObjUtils {
     public static Object toObject(InputStream is) {
         return TGS_UnSafe.call(() -> {
             Object obj;
-            try ( var input = new ObjectInputStream(is)) {
+            try (var input = new ObjectInputStream(is)) {
                 obj = input.readObject();
             } catch (EOFException e) {
                 return null;
@@ -60,12 +63,12 @@ public class TS_FileObjUtils {
         });
     }
 
-    public static void toStream(Object sourceObject, OutputStream os) {
-        TGS_UnSafe.run(() -> {
-            try ( var output = new ObjectOutputStream(os)) {
-                output.writeObject(sourceObject);
-                output.flush();
-            }
-        });
-    }
+//    public static void toStream(Object sourceObject, OutputStream os) {
+//        TGS_UnSafe.run(() -> {
+//            try (var output = new ObjectOutputStream(os)) {
+//                output.writeObject(sourceObject);
+//                output.flush();
+//            }
+//        });
+//    }
 }
