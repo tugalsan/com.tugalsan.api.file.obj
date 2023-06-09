@@ -31,7 +31,7 @@ public class TS_FileObjUtils {
         return TS_StringUtils.toString(bytes);
     }
 
-    public static Object toObject(byte[] bytes) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
+    public static <T> T toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
         return TGS_UnSafe.call(() -> {
             if (bytes == null) {
                 return null;
@@ -44,9 +44,9 @@ public class TS_FileObjUtils {
                 return null;
             }
             if (obj instanceof CharSequence) {
-                return TS_StringUtils.toString(bytes);
+                obj = TS_StringUtils.toString(bytes);
             }
-            return obj;
+            return outputType.isInstance(obj) ? (T) obj : null;
         });
     }
 
