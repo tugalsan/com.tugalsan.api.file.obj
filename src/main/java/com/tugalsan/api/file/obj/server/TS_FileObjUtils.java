@@ -27,10 +27,9 @@ public class TS_FileObjUtils {
         });
     }
 
-    public static Object toString(byte[] bytes) {
-        return TS_StringUtils.toString(bytes);
-    }
-
+//    public static Object toString(byte[] bytes) {
+//        return TS_StringUtils.toString(bytes);
+//    }
     public static <T> T toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
         return TGS_UnSafe.call(() -> {
             if (bytes == null) {
@@ -38,7 +37,7 @@ public class TS_FileObjUtils {
             }
             Object obj;
             try (var bais = new ByteArrayInputStream(bytes)) {
-                obj = toObject(bais);
+                obj = toObject_dontUseForStrings(bais);
             }
             if (obj == null) {
                 return null;
@@ -51,7 +50,7 @@ public class TS_FileObjUtils {
     }
 
     @Deprecated// for not Strings
-    public static Object toObject(InputStream is) {
+    public static Object toObject_dontUseForStrings(InputStream is) {
         return TGS_UnSafe.call(() -> {
             Object obj;
             try (var input = new ObjectInputStream(is)) {
