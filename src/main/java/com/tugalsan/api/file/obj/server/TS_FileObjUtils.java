@@ -7,23 +7,25 @@ import java.util.Optional;
 
 public class TS_FileObjUtils {
 
-    public static byte[] toBytes(Object obj) {
+    public static Optional<byte[]> toBytes(Object obj) {
         return TGS_UnSafe.call(() -> {
             if (obj == null) {
-                return null;
+                return Optional.empty();
             }
             if (obj instanceof byte[] val) {
-                return val;
+                return Optional.of(val);
             }
             if (obj instanceof CharSequence val) {
-                return TS_StringUtils.toByte(val.toString());
+                return Optional.of(TS_StringUtils.toByte(val.toString()));
             }
             try (var baos = new ByteArrayOutputStream()) {
                 try (var oos = new ObjectOutputStream(baos)) {// DO NOT CLOSE OOS before getting byte array!
                     oos.writeObject(obj);
                     oos.flush();
-                    return baos.toByteArray();
+                    return Optional.of(baos.toByteArray());
                 }
+            } catch (IOException ex) {
+                return Optional.empty();
             }
         });
     }
