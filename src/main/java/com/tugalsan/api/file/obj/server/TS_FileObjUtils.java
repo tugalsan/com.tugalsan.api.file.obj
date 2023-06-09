@@ -3,6 +3,7 @@ package com.tugalsan.api.file.obj.server;
 import com.tugalsan.api.string.server.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.io.*;
+import java.util.Optional;
 
 public class TS_FileObjUtils {
 
@@ -27,47 +28,40 @@ public class TS_FileObjUtils {
         });
     }
 
-//    public static Object toString(byte[] bytes) {
-//        return TS_StringUtils.toString(bytes);
-//    }
-    public static <T> T toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
+    public static <T> Optional<T> toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
         return TGS_UnSafe.call(() -> {
             if (bytes == null) {
-                return null;
+                return Optional.empty();
             }
-            Object obj;
+            if (outputType == CharSequence.class || outputType == String.class) {
+                var str = TS_StringUtils.toString(bytes);
+                return Optional.of((T) str);
+            }
             try (var bais = new ByteArrayInputStream(bytes)) {
-                obj = toObject_dontUseForStrings(bais);
+                return toObject(bais, outputType);
             }
-            if (obj == null) {
-                return null;
-            }
-            if (obj instanceof CharSequence) {
-                obj = TS_StringUtils.toString(bytes);
-            }
-            return outputType.isInstance(obj) ? (T) obj : null;
         });
     }
 
-    @Deprecated// for not Strings
-    public static Object toObject_dontUseForStrings(InputStream is) {
+    public static <T> Optional<T> toObject(InputStream is, Class<T> outputType) {
         return TGS_UnSafe.call(() -> {
+            if (is == null) {
+                return Optional.empty();
+            }
+            if (outputType == CharSequence.class || outputType == String.class) {
+                var str = TS_StringUtils.toString(is);
+                return Optional.of((T) str);
+            }
             Object obj;
             try (var input = new ObjectInputStream(is)) {
                 obj = input.readObject();
+                if (obj == null && !outputType.isInstance(obj)) {
+                    return Optional.empty();
+                }
+                return Optional.of((T) obj);
             } catch (EOFException e) {
-                return null;
+                return Optional.empty();
             }
-            return obj;
         });
     }
-
-//    public static void toStream(Object sourceObject, OutputStream os) {
-//        TGS_UnSafe.run(() -> {
-//            try (var output = new ObjectOutputStream(os)) {
-//                output.writeObject(sourceObject);
-//                output.flush();
-//            }
-//        });
-//    }
 }
