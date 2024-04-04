@@ -11,11 +11,6 @@
             <artifactId>com.tugalsan.api.string</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>com.tugalsan.api.callable</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
     
     <build>
