@@ -8,7 +8,7 @@ public class TS_FileObjUtils {
 
     public static TGS_Union<byte[]> toBytes(Object obj) {
         if (obj == null) {
-            return TGS_Union.ofThrowable(
+            return TGS_Union.ofExcuse(
                     TS_FileObjUtils.class.getSimpleName(),
                     "toBytes(Object obj)",
                     "obj == null"
@@ -27,13 +27,13 @@ public class TS_FileObjUtils {
                 return TGS_Union.of(baos.toByteArray());
             }
         } catch (IOException ex) {
-            return TGS_Union.ofThrowable(ex);
+            return TGS_Union.ofExcuse(ex);
         }
     }
 
     public static <T> TGS_Union<T> toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
         if (bytes == null) {
-            return TGS_Union.ofThrowable(
+            return TGS_Union.ofExcuse(
                     TS_FileObjUtils.class.getSimpleName(),
                     "toObject(byte[] bytes, Class<T> outputType)",
                     "bytes == null"
@@ -46,13 +46,13 @@ public class TS_FileObjUtils {
         try (var bais = new ByteArrayInputStream(bytes)) {
             return toObject(bais, outputType);
         } catch (IOException ex) {
-            return TGS_Union.ofThrowable(ex);
+            return TGS_Union.ofExcuse(ex);
         }
     }
 
     public static <T> TGS_Union<T> toObject(InputStream is, Class<T> outputType) {
         if (is == null) {
-            return TGS_Union.ofThrowable(
+            return TGS_Union.ofExcuse(
                     TS_FileObjUtils.class.getSimpleName(),
                     "toObject(InputStream is, Class<T> outputType) ",
                     "is == null"
@@ -66,7 +66,7 @@ public class TS_FileObjUtils {
         try (var input = new ObjectInputStream(is)) {
             obj = input.readObject();
             if (obj == null && !outputType.isInstance(obj)) {
-                return TGS_Union.ofThrowable(
+                return TGS_Union.ofExcuse(
                         TS_FileObjUtils.class.getSimpleName(),
                         "toObject(InputStream is, Class<T> outputType) ",
                         "bj == null && !outputType.isInstance(obj)"
@@ -74,7 +74,7 @@ public class TS_FileObjUtils {
             }
             return TGS_Union.of((T) obj);
         } catch (IOException | ClassNotFoundException e) {
-            return TGS_Union.ofThrowable(e);
+            return TGS_Union.ofExcuse(e);
         }
     }
 }
