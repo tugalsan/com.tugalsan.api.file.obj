@@ -1,6 +1,6 @@
 package com.tugalsan.api.file.obj.server;
 
-import com.tugalsan.api.string.server.*;
+import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.*;
 import java.io.*;
@@ -16,7 +16,7 @@ public class TS_FileObjUtils {
                 return TGS_UnionExcuse.of(val);
             }
             if (obj instanceof CharSequence val) {
-                return TGS_UnionExcuse.of(TS_StringUtils.toByte(val.toString()));
+                return TGS_UnionExcuse.of(TGS_StringUtils.jre().toByte(val.toString()));
             }
             try (var baos = new ByteArrayOutputStream()) {
                 try (var oos = new ObjectOutputStream(baos)) {// DO NOT CLOSE OOS before getting byte array!
@@ -36,7 +36,7 @@ public class TS_FileObjUtils {
                 return TGS_UnionExcuse.ofExcuse(TS_FileObjUtils.class.getSimpleName(), "toObject", "bytes == null");
             }
             if (outputType == CharSequence.class || outputType == String.class) {
-                var str = TS_StringUtils.toString(bytes);
+                var str = TGS_StringUtils.jre().toString(bytes);
                 return TGS_UnionExcuse.of((T) str);
             }
             try (var bais = new ByteArrayInputStream(bytes)) {
@@ -51,7 +51,7 @@ public class TS_FileObjUtils {
                 return TGS_UnionExcuse.ofExcuse(TS_FileObjUtils.class.getSimpleName(), "toObject", "is == null");
             }
             if (outputType == CharSequence.class || outputType == String.class) {
-                var str = TS_StringUtils.toString(is);
+                var str = TGS_StringUtils.jre().toString(is);
                 return TGS_UnionExcuse.of((T) str);
             }
             Object obj;
