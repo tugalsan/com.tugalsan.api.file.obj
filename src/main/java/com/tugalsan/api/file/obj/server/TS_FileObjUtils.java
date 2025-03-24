@@ -1,6 +1,6 @@
 package com.tugalsan.api.file.obj.server;
 
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 
@@ -9,7 +9,7 @@ import java.io.*;
 public class TS_FileObjUtils {
 
     public static TGS_UnionExcuse<byte[]> toBytes(Object obj) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (obj == null) {
                 return TGS_UnionExcuse.ofExcuse(TS_FileObjUtils.class.getSimpleName(), "toBytes", "obj == null");
             }
@@ -32,7 +32,7 @@ public class TS_FileObjUtils {
     }
 
     public static <T> TGS_UnionExcuse<T> toObject(byte[] bytes, Class<T> outputType) {//java.io.StreamCorruptedException: invalid stream header: 312D2041'
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (bytes == null) {
                 return TGS_UnionExcuse.ofExcuse(TS_FileObjUtils.class.getSimpleName(), "toObject", "bytes == null");
             }
@@ -47,7 +47,7 @@ public class TS_FileObjUtils {
     }
 
     public static <T> TGS_UnionExcuse<T> toObject(InputStream is, Class<T> outputType) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (is == null) {
                 return TGS_UnionExcuse.ofExcuse(TS_FileObjUtils.class.getSimpleName(), "toObject", "is == null");
             }
