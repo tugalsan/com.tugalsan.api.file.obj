@@ -8,6 +8,10 @@ import java.io.*;
 
 public class TS_FileObjUtils {
 
+    private TS_FileObjUtils() {
+
+    }
+
     public static TGS_UnionExcuse<byte[]> toBytes(Object obj) {
         return TGS_FuncMTCUtils.call(() -> {
             if (obj == null) {
